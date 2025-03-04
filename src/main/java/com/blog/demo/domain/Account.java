@@ -2,9 +2,12 @@ package com.blog.demo.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import lombok.Getter;
 
 @Entity
+@Getter
 public class Account {
     @Id
     private Long memberId;
@@ -13,7 +16,8 @@ public class Account {
 
     private String password;
 
-    @OneToOne(mappedBy = "account")
+    @OneToOne
+    @MapsId
     private Member member;
 
     public Account(Long memberId, String id, String password) {
