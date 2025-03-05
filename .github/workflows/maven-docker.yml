@@ -61,7 +61,9 @@ jobs:
           name: version
           
       - name: Pull Docker image
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
+          docker images
 
       - name: Run Docker container
         run: |
