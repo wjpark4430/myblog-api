@@ -63,23 +63,6 @@ jobs:
       - name: Pull Docker image
         run: docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
 
-      - name: Stop and remove old container (if exists)
-        run: |
-          CONTAINER_ID=$(docker ps -aq -f "name=myblog-server")
-          if [ -n "$CONTAINER_ID" ]; then
-            echo "Stopping and removing existing container..."
-            docker stop myblog-server || true
-            docker rm myblog-server || true
-          fi
-
-      - name: Remove old Docker image (if exists)
-        run: |
-          IMAGE_ID=$(docker images -q ${{ secrets.DOCKER_USERNAME }}/my-blog)
-          if [ -n "$IMAGE_ID" ]; then
-            echo "Removing old image..."
-            docker rmi ${{ secrets.DOCKER_USERNAME }}/my-blog || true
-          fi
-
       - name: Run Docker container
         run: |
           docker run --name myblog-server \
