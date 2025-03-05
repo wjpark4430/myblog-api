@@ -37,7 +37,7 @@ jobs:
         echo "$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" > version.txt
 
     - name: Upload VERSION artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: version
         path: version.txt
