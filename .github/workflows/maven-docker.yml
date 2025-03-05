@@ -65,8 +65,8 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run --name myblog-server \
-          -d ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt) \
+          docker run --name myblog-instance \
           -p 8080:8080 \
-          -e SPRING_PROFILES_ACTIVE=prod
+          -e SPRING_PROFILES_ACTIVE=prod \
+          -d ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
 
