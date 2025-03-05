@@ -82,10 +82,9 @@ jobs:
 
       - name: Run Docker container
         run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           docker run --name myblog-server \
           -d \
           -p 8080:8080 \
           -e SPRING_PROFILES_ACTIVE=prod \
-          ${{ secrets.DOCKER_USERNAME }}/my-blog:$VERSION
+          ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
 
