@@ -8,6 +8,7 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 
 @Entity
+@Getter
 public class Like {
     @Id
     private Long boardId;

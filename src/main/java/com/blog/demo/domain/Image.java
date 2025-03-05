@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
+@Getter
 public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
+@Getter
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 @Entity
+@Getter
 public class BoardTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
