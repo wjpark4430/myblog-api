@@ -3,8 +3,6 @@ name: Java CI with Maven and Docker
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
@@ -36,12 +34,12 @@ jobs:
 
     - name: Set VERSION
       run: echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
-
+    
     - name: Build Docker Image
-      run: docker build -t my-blog:${{ env.VERSION }} .
-
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }} .
+    
     - name: Push Docker Image
-      run: docker push my-blog:${{ env.VERSION }}
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,6 +50,23 @@ jobs:
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$VERSION
+
+      - name: Stop and remove old container (if exists)
+        run: |
+          CONTAINER_ID=$(docker ps -aq -f "name=myblog-server")
+          if [ -n "$CONTAINER_ID" ]; then
+            echo "Stopping and removing existing container..."
+            docker stop myblog-server || true
+            docker rm myblog-server || true
+          fi
+
+      - name: Remove old Docker image (if exists)
+        run: |
+          IMAGE_ID=$(docker images -q ${{ secrets.DOCKER_USERNAME }}/my-blog)
+          if [ -n "$IMAGE_ID" ]; then
+            echo "Removing old image..."
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/my-blog || true
+          fi
 
       - name: Run Docker container
         run: |
