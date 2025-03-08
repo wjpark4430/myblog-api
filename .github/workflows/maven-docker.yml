@@ -60,15 +60,17 @@ jobs:
         with:
           name: version
           
-      - name: Pull Docker image
-        run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
-          docker images
-
-      - name: Run Docker container
-        run: |
-          docker run --name myblog-instance \
-          -p 8080:8080 \
-          -e SPRING_PROFILES_ACTIVE=prod \
-          -d ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
+      - name: Deploy Instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_IP }}
+          username: ${{ secrets.SSH_ID }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
+            docker run --name myblog-instance \
+            -p 8080:8080 \
+            -e SPRING_PROFILES_ACTIVE=prod \
+            -d ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
 
