@@ -58,8 +58,8 @@ jobs:
         with:
           name: version
 
-      - name: Show version.txt content
-        run: cat version.txt
+      - name: Set VERSION
+        run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
 
       - name: Deploy Instance
         uses: appleboy/ssh-action@master
@@ -69,9 +69,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
+            docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
             docker run --name myblog-instance \
             -p 8080:8080 \
             -e SPRING_PROFILES_ACTIVE=prod \
-            -d ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
-
+            -d ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
