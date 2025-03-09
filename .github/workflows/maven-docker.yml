@@ -57,7 +57,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: version
-          
+
+      - name: Show version.txt content
+        run: cat version.txt
+
       - name: Deploy Instance
         uses: appleboy/ssh-action@master
         with:
