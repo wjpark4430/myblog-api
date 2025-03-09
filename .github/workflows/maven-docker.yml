@@ -71,6 +71,6 @@ jobs:
           script: |
             docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
             docker run --name myblog-instance \
-            -p 8080:8080 \
+            -p 8084:8084 \
             -e SPRING_PROFILES_ACTIVE=prod \
             -d ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
