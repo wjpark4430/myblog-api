@@ -2,7 +2,7 @@ spring:
   application:
     name: myblog
   profiles:
-    active: dev
+    active: prod
   jpa: 
     open-in-view: false
 server:
