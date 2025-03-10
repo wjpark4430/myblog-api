@@ -12,7 +12,7 @@ public class Account {
     @Id
     private Long memberId;
 
-    private String id;
+    private String userId;
 
     private String password;
 
@@ -20,9 +20,9 @@ public class Account {
     @MapsId
     private Member member;
 
-    public Account(Long memberId, String id, String password) {
-        this.memberId = memberId;
-        this.id = id;
+    public Account(String userId, String password, Member member) {
+        this.userId = userId;
         this.password = password;
+        this.member = member;
     }
 }

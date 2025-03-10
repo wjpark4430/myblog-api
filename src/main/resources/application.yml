@@ -5,3 +5,4 @@ spring:
     active: dev
   jpa: 
     open-in-view: false
+  port: 8084
