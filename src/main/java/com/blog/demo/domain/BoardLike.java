@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-public class Like {
+public class BoardLike {
     @Id
     private Long boardId;
 
@@ -22,7 +22,7 @@ public class Like {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    public Like(Board board, Member member) {
+    public BoardLike(Board board, Member member) {
         this.board = board;
         this.member = member;
     }

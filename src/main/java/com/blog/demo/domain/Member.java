@@ -26,7 +26,7 @@ public class Member {
     private Account account;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Like> likes;
+    private List<BoardLike> likes;
 
     public Member(String name, String email) {
         this.name = name;
