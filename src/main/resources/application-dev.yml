@@ -11,5 +11,10 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.use_sql_comments: true
+logging:
+  level:
+    root: INFO
+    com.blog.demo: DEBUG  # 특정 패키지에 대해 DEBUG 레벨로 설정
+
   
 
