@@ -69,6 +69,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            # 기존 컨테이너가 있으면 중지하고 삭제
+            docker stop myblog-instance || true
+            docker rm myblog-instance || true
+      
             docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
             docker run --name myblog-instance \
             -p 8084:8084 \
