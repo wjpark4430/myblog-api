@@ -35,7 +35,7 @@ public class Board {
     private Member member;
 
     @OneToOne(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Like like;
+    private BoardLike like;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
