@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate.format_sql: true
@@ -14,7 +14,7 @@ spring:
 logging:
   level:
     root: INFO
-    com.blog.demo: DEBUG  # 특정 패키지에 대해 DEBUG 레벨로 설정
+    com.blog.back: DEBUG  # 특정 패키지에 대해 DEBUG 레벨로 설정
 
   
 

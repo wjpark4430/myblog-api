@@ -10,10 +10,10 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.blog</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>back</name>
+	<description>myblog project for Spring Boot</description>
 	<url />
 	<licenses>
 		<license />
