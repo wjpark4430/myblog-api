@@ -43,10 +43,10 @@ jobs:
         path: version.txt
     
     - name: Build Docker Image
-      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt) .
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/my-blog-api:$(cat version.txt) .
 
     - name: Push Docker Image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/my-blog:$(cat version.txt)
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/my-blog-api:$(cat version.txt)
 
   deploy:
     runs-on: ubuntu-latest
@@ -70,12 +70,12 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             # 기존 컨테이너가 있으면 중지하고 삭제
-            docker stop myblog-instance || true
-            docker rm myblog-instance || true
+            docker stop myblog-api-instance || true
+            docker rm myblog-api-instance || true
       
-            docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
-            docker run --name myblog-instance \
+            docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog-api:${{ env.VERSION }}
+            docker run --name myblog-api-instance \
             --network myblog-network \
             -p 8090:8090 \
             -e SPRING_PROFILES_ACTIVE=prod \
-            -d ${{ secrets.DOCKER_USERNAME }}/my-blog:${{ env.VERSION }}
+            -d ${{ secrets.DOCKER_USERNAME }}/my-blog-api:${{ env.VERSION }}
