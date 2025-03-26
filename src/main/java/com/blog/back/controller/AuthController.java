@@ -1,8 +1,9 @@
 package com.blog.back.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.back.dto.MemberLoginRequestDto;
@@ -13,14 +14,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
     
     private final LoginService loginService;
     
-    @PostMapping("/loginRequest")
+    @PostMapping("/login")
     public ResponseEntity<Long> checkAuth(
-        @ModelAttribute MemberLoginRequestDto loginRequestDto,
+        @RequestBody MemberLoginRequestDto loginRequestDto,
      HttpServletResponse response) {
         Long memberId = loginService.login(loginRequestDto.getUserId(), loginRequestDto.getPassword());
         

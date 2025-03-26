@@ -14,19 +14,15 @@ public class LoginServiceImpl implements LoginService {
 
     private final AccountRepository accountRepository;
 
-    
-    public boolean isLogin(String userId, String password) {
-        Account loginAccount = accountRepository.findByUserId(userId)
-        .orElseThrow(() -> new RuntimeException("Can't find ID"));
-        return loginAccount.getUserId().equals(userId) && loginAccount.getPassword().equals(password);
-    }
-
     @Override
     public Long login(String userId, String password) {
-        if(!isLogin(userId, password)){
+        Account loginAccount = accountRepository.findByUserId(userId)
+        .orElseThrow(() -> new RuntimeException("User Not Found"));
+
+        if(!loginAccount.getPassword().equals(password)){
             throw new RuntimeException("Incorrect Password");
         }
-        return accountRepository.findMemberIdByUserId(userId);
-    }
 
+        return loginAccount.getMemberId();
+    }
 }
