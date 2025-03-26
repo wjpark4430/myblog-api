@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.blog.back.domain.Account;
 
+
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByUserId(String userId);

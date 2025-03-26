@@ -1,6 +1,6 @@
 spring:
   application:
-    name: myblog
+    name: myblog-api
   profiles:
     active: dev
   jpa: 
