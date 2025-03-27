@@ -5,5 +5,7 @@ spring:
     active: dev
   jpa: 
     open-in-view: false
+  jackson:
+    time-zone: Asia/Seoul
 server:
   port: 8090

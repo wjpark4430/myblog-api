@@ -1,9 +1,18 @@
 package com.blog.back.service;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
-import com.blog.back.dto.BoardDTO;
+import com.blog.back.dto.BoardCreateRequestDTO;
+import com.blog.back.dto.BoardListResponseDTO;
+import com.blog.back.dto.BoardResponseDTO;
+import com.blog.back.dto.BoardUpdateRequestDTO;
 
 public interface BoardService {
-    List<BoardDTO> getBoards();
+    BoardListResponseDTO getBoards(Pageable pageable);
+
+    BoardResponseDTO getBoard(Long id);
+
+    Long createBoard(BoardCreateRequestDTO dto);
+
+    void updateBoard(Long id, BoardUpdateRequestDTO dto);
 }
