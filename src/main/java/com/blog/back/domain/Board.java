@@ -3,7 +3,10 @@ package com.blog.back.domain;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import com.blog.back.dto.BoardUpdateRequestDTO;
+
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -28,9 +31,10 @@ public class Board {
 
     private String content;
 
-    private Long like_count;
+    private Long likeCount;
 
-    private ZonedDateTime changed_at;
+    @Column(updatable = false)
+    private ZonedDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -48,11 +52,20 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardImage> boardImages;
 
-    public Board(String title, String content) {
+    private Board(String title, String content){
         this.title = title;
         this.content = content;
-        this.like_count = Long.valueOf(0);
-        this.changed_at = ZonedDateTime.now();
+        this.likeCount = 0L;
+        this.createdAt = ZonedDateTime.now();
+    }
+
+    public static Board ofCreate(String title, String content) {
+        return new Board(title, content);
+    }
+
+    public void update(BoardUpdateRequestDTO dto){
+        this.title = dto.getTitle();
+        this.content = dto.getContent();
     }
 
 }
