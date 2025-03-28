@@ -76,6 +76,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/my-blog-api:${{ env.VERSION }}
             docker run --name myblog-api-instance \
             --network myblog-network \
+            --ip ${{ secrets.CONTAINER_IP }} \
             -p 8090:8090 \
             -e SPRING_PROFILES_ACTIVE=prod \
             -d ${{ secrets.DOCKER_USERNAME }}/my-blog-api:${{ env.VERSION }}
