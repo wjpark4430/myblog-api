@@ -79,4 +79,9 @@ jobs:
             --ip ${{ secrets.CONTAINER_IP }} \
             -p 8090:8090 \
             -e SPRING_PROFILES_ACTIVE=prod \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
             -d ${{ secrets.DOCKER_USERNAME }}/my-blog-api:${{ env.VERSION }}
