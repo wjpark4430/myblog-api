@@ -19,11 +19,16 @@ public class BoardLike {
     private Board board;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    public BoardLike(Board board, Member member) {
+    private BoardLike(Board board, Member member) {
         this.board = board;
         this.member = member;
     }
+
+    public static BoardLike ofCreate(Board board, Member member) {
+        return new BoardLike(board, member);
+    }
+
 }

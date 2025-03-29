@@ -1,4 +1,4 @@
-package com.blog.back.dto;
+package com.blog.back.dto.board;
 
 import java.time.ZonedDateTime;
 

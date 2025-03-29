@@ -1,4 +1,4 @@
-package com.blog.back.dto;
+package com.blog.back.dto.board;
 
 import com.blog.back.domain.Board;
 import com.blog.back.util.TimeUtils;

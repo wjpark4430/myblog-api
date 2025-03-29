@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.blog.back.dto.MemberLoginRequestDto;
+import com.blog.back.dto.member.MemberLoginRequestDto;
 import com.blog.back.service.LoginService;
 
 import jakarta.servlet.http.Cookie;
