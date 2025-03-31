@@ -1,28 +1,40 @@
 package com.blog.back.service.impl;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.blog.back.domain.Account;
-import com.blog.back.repository.AccountRepository;
+import com.blog.back.dto.member.MemberLoginRequestDto;
+import com.blog.back.jwt.JwtService;
 import com.blog.back.service.LoginService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class LoginServiceImpl implements LoginService {
 
-    private final AccountRepository accountRepository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Override
-    public Long login(String userId, String password) {
-        Account loginAccount = accountRepository.findByUserId(userId)
-        .orElseThrow(() -> new RuntimeException("User Not Found"));
+    public Long login(MemberLoginRequestDto dto, HttpServletResponse response) {
+        String userId = dto.getUserId();
+        String password = dto.getPassword();
 
-        if(!loginAccount.getPassword().equals(password)){
-            throw new RuntimeException("Incorrect Password");
-        }
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userId, password);
+        Authentication authentication = authenticationManager.authenticate(authToken);
 
-        return loginAccount.getMemberId();
+        String accessToken = jwtService.generateAccessToken(authentication.getName());
+        String refreshToken = jwtService.generateRefreshToken(authentication.getName());
+
+        jwtService.setTokenCookies(response, accessToken, refreshToken);
+
+        return 0L;
     }
+
+    
+
 }
