@@ -3,6 +3,7 @@ package com.blog.back.jwt;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +40,32 @@ public class JwtService {
 
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+    }
+
+    public void removeTokenCookie(HttpServletResponse response) {
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0) 
+                .build();
+        
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+        response.addHeader("Set-Cookie", refreshTokenCookie.toString());
+
+    }
+
+    public String getUserNameByRequest(HttpServletRequest request){
+        String token = jwtTokenProvider.resolveToken(request);
+        String username = jwtTokenProvider.getUsernameFromToken(token);
+
+        return username;
     }
 }
 

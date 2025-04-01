@@ -20,7 +20,7 @@ public class LoginServiceImpl implements LoginService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public Long login(MemberLoginRequestDto dto, HttpServletResponse response) {
+    public void login(MemberLoginRequestDto dto, HttpServletResponse response) {
         String userId = dto.getUserId();
         String password = dto.getPassword();
 
@@ -31,8 +31,6 @@ public class LoginServiceImpl implements LoginService {
         String refreshToken = jwtService.generateRefreshToken(authentication.getName());
 
         jwtService.setTokenCookies(response, accessToken, refreshToken);
-
-        return 0L;
     }
 
     

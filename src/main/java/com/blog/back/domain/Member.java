@@ -30,7 +30,16 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<BoardLike> likes;
 
-    public Member(String name, String email) {
+    private Member(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    public static Member ofCreate(String name, String email) {
+        return new Member(name, email);
+    }
+
+    public void update(String name, String email) {
         this.name = name;
         this.email = email;
     }

@@ -16,16 +16,21 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    
-    private final LoginService loginService;
-    
-    @PostMapping("/login")
-    public ResponseEntity<Long> checkAuth(
-        @RequestBody MemberLoginRequestDto loginRequestDto,
-     HttpServletResponse response) {
-        Long memberId = loginService.login(loginRequestDto, response);
-        
 
-        return ResponseEntity.ok().body(memberId);
+    private final LoginService loginService;
+
+    @PostMapping("/login")
+    public ResponseEntity<Void> checkAuth(
+            @RequestBody MemberLoginRequestDto loginRequestDto,
+            HttpServletResponse response) {
+        loginService.login(loginRequestDto, response);
+        return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        
+        return ResponseEntity.ok().build();
+    }
+    
 }
