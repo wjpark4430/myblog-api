@@ -1,5 +1,8 @@
 package com.blog.back.jwt;
 
+import java.util.Collections;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -19,11 +22,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-
         Account loginAccount = accountRepository.findByUserId(userName)
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found: " + userName));
 
-        UserDetails user = new User(loginAccount.getUserId(), loginAccount.getPassword(), null);
+        UserDetails user = new User(
+                loginAccount.getUserId(),
+                loginAccount.getPassword(),
+                Collections.singletonList(
+                        new SimpleGrantedAuthority("ROLE_USER")));
 
         return user;
     }

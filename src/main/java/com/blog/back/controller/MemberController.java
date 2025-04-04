@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.back.dto.member.MemberRegisterRequestDTO;
-import com.blog.back.repository.AccountRepository;
 import com.blog.back.service.MemberService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,9 +21,8 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
     private final MemberService memberService;
-    private final AccountRepository accountRepository;
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<Long> register(@RequestBody MemberRegisterRequestDTO dto) {
         Long memberId = memberService.registerMember(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(memberId);

@@ -1,12 +1,16 @@
 package com.blog.back.jwt;
 
+import java.util.List;
+
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JwtService {
@@ -14,7 +18,7 @@ public class JwtService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public String generateAccessToken(String sub) {
-        return jwtTokenProvider.createAccessToken(sub);
+        return jwtTokenProvider.createAccessToken(sub, List.of("ROLE_USER"));
     }
 
     public String generateRefreshToken(String sub) {
@@ -53,19 +57,41 @@ public class JwtService {
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
-                .maxAge(0) 
+                .maxAge(0)
                 .build();
-        
+
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
     }
 
-    public String getUserNameByRequest(HttpServletRequest request){
-        String token = jwtTokenProvider.resolveToken(request);
+    public String getUserNameByRequest(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveAccessToken(request);
         String username = jwtTokenProvider.getUsernameFromToken(token);
 
         return username;
     }
-}
 
+    public boolean validateToken(String token) {
+        return jwtTokenProvider.validateToken(token);
+    }
+
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        if (refreshToken == null || !validateToken(refreshToken)) {
+            throw new RuntimeException("Invalid refresh token");
+        }
+
+        String userId = jwtTokenProvider.getUsernameFromToken(refreshToken);
+        String newAccessToken = generateAccessToken(userId);
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", newAccessToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(60 * 60)
+                .build();
+
+        response.addHeader("Set-Cookie", accessTokenCookie.toString());
+    }
+}

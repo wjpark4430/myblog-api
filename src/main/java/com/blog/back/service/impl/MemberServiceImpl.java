@@ -1,7 +1,10 @@
 package com.blog.back.service.impl;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.blog.back.domain.Account;
 import com.blog.back.domain.Member;
 import com.blog.back.dto.member.MemberRegisterRequestDTO;
 import com.blog.back.jwt.JwtService;
@@ -20,15 +23,23 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final AccountRepository accountRepository;
     private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원 가입
     @Override
+    @Transactional
     public Long registerMember(MemberRegisterRequestDTO dto) {
-        Member member = Member.ofCreate(dto.getName(), dto.getEmail());
+        Member member = Member.ofCreate(dto.getUsername(), dto.getEmail());
 
         Member createMember = memberRepository.save(member);
 
         Long id = createMember.getId();
+        String username = dto.getUserId();
+        String password = passwordEncoder.encode(dto.getPassword());
+
+        Account account = Account.ofCreate(username, password, createMember);
+
+        accountRepository.save(account);
 
         return id;
     }
@@ -36,6 +47,7 @@ public class MemberServiceImpl implements MemberService {
 
     // 회원 탈퇴?
     @Override
+    @Transactional
     public void deleteMember(HttpServletRequest request, HttpServletResponse response) {
 
         String username = jwtService.getUserNameByRequest(request);

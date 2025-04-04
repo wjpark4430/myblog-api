@@ -20,24 +20,45 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
+    private final JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        String token = jwtTokenProvider.resolveToken(request);
+        String accessToken = jwtTokenProvider.resolveAccessToken(request);
 
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            String username = jwtTokenProvider.getUsernameFromToken(token);
+        if (accessToken != null) {
+            if (jwtTokenProvider.validateToken(accessToken)) {
+                // access token 유효 → 인증 처리
+                authenticate(accessToken);
+            } else {
+                // access token 만료 → refresh token 확인
+                String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+                if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
+                    String newAccessToken = jwtTokenProvider.reissueAccessToken(refreshToken);
+                    jwtService.refreshToken(request, response);
 
-            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
-                    userDetails.getAuthorities());
-
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+                    authenticate(newAccessToken);
+                } else {
+                    // refresh token도 만료 → 로그인 필요
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
+            }
         }
 
         chain.doFilter(request, response);
+    }
+
+    private void authenticate(String token) {
+        String username = jwtTokenProvider.getUsernameFromToken(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);
+
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null,
+                userDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authToken);
     }
 }
