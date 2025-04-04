@@ -85,4 +85,7 @@ jobs:
             -e DB_NAME=${{ secrets.DB_NAME }} \
             -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
+            -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+            -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
             -d ${{ secrets.DOCKER_USERNAME }}/my-blog-api:${{ env.VERSION }}
