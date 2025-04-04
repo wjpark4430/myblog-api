@@ -1,0 +1,3 @@
+jwt:
+  secret: test-secret-key
+  expiration: 3600
