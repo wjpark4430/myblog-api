@@ -3,7 +3,7 @@ package com.blog.back.domain;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import com.blog.back.dto.BoardUpdateRequestDTO;
+import com.blog.back.dto.board.BoardUpdateRequestDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

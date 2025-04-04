@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.blog.back.domain.Board;
-import com.blog.back.dto.BoardCreateRequestDTO;
-import com.blog.back.dto.BoardListResponseDTO;
-import com.blog.back.dto.BoardResponseDTO;
-import com.blog.back.dto.BoardUpdateRequestDTO;
+import com.blog.back.dto.board.BoardCreateRequestDTO;
+import com.blog.back.dto.board.BoardListResponseDTO;
+import com.blog.back.dto.board.BoardResponseDTO;
+import com.blog.back.dto.board.BoardUpdateRequestDTO;
 import com.blog.back.repository.BoardRepository;
 import com.blog.back.service.BoardService;
 

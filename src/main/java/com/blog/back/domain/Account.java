@@ -25,9 +25,17 @@ public class Account {
     @MapsId
     private Member member;
 
-    public Account(String userId, String password, Member member) {
+    private Account(String userId, String password, Member member) {
         this.userId = userId;
         this.password = password;
         this.member = member;
+    }
+
+    public static Account ofCreate(String userId, String password, Member member) {
+        return new Account(userId, password, member);
+    }
+
+    public void update(String password) {
+        this.password = password;
     }
 }
