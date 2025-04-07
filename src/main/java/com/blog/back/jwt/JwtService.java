@@ -1,7 +1,9 @@
 package com.blog.back.jwt;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtService {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisTemplate<String, String> redisTemplate;
 
     public String generateAccessToken(String sub) {
         return jwtTokenProvider.createAccessToken(sub, List.of("ROLE_USER"));
@@ -25,7 +28,7 @@ public class JwtService {
         return jwtTokenProvider.createRefreshToken(sub);
     }
 
-    public void setTokenCookies(HttpServletResponse response, String accessToken, String refreshToken) {
+    public void setTokenCookies(HttpServletResponse response, String sub, String accessToken, String refreshToken) {
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
                 .httpOnly(true)
                 .secure(true)
@@ -34,6 +37,7 @@ public class JwtService {
                 .build();
 
         // response.setHeader("Authorization", "Bearer " + accessToken);
+        redisTemplate.opsForValue().set("refresh:" + sub, refreshToken, 7, TimeUnit.DAYS);
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
@@ -46,7 +50,13 @@ public class JwtService {
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
     }
 
-    public void removeTokenCookie(HttpServletResponse response) {
+    public void removeTokenCookie(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        if (refreshToken != null && validateToken(refreshToken)) {
+            String userId = jwtTokenProvider.getUsernameFromToken(refreshToken);
+            redisTemplate.delete("refresh:" + userId);
+        }
+
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", "")
                 .httpOnly(true)
                 .secure(true)
@@ -76,9 +86,11 @@ public class JwtService {
         return jwtTokenProvider.validateToken(token);
     }
 
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
-        if (refreshToken == null || !validateToken(refreshToken)) {
+        String redisRefreshToken = redisTemplate.opsForValue().get("refresh:" + jwtTokenProvider.getUsernameFromToken(refreshToken));
+
+        if (!refreshToken.equals(redisRefreshToken) || refreshToken == null || !validateToken(refreshToken)) {
             throw new RuntimeException("Invalid refresh token");
         }
 

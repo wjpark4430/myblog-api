@@ -56,7 +56,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.deleteById(memberId);
 
-        jwtService.removeTokenCookie(response);
+        jwtService.removeTokenCookie(request, response);
 
     }
 }

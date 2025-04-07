@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.blog.back.jwt.CustomLogoutHandler;
 import com.blog.back.jwt.CustomUserDetailsService;
 import com.blog.back.jwt.JwtFilter;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
         private final CustomUserDetailsService customUserDetailsService;
+        private final CustomLogoutHandler customLogoutHandler;
         private final PasswordEncoder passwordEncoder;
 
         @Bean
@@ -46,9 +48,10 @@ public class SecurityConfig {
                                                 .anyRequest().authenticated())
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
-                                                .logoutSuccessUrl("/")
-                                                .invalidateHttpSession(true)
-                                                .deleteCookies("JSESSIONID", "accessToken", "refreshToken"))
+                                                .addLogoutHandler(customLogoutHandler)
+                                                .logoutSuccessHandler((request, response, authentication) -> {
+                                                        response.sendRedirect("/");
+                                                }))
 
                                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
