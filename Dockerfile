@@ -8,4 +8,4 @@ RUN mvn clean package -DskipTests
 FROM openjdk:17-jdk
 WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
-ENTRYPOINT ["java","-Xms128m", "-Xmx256m", "-XX:+UseSerialGC", "-jar", "app.jar"]
+ENTRYPOINT ["java","-Xms64m", "-Xmx256m", "-XX:+UseSerialGC", "-jar", "app.jar"]
