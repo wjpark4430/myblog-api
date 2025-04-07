@@ -9,6 +9,7 @@ import com.blog.back.dto.member.MemberLoginRequestDto;
 import com.blog.back.jwt.JwtService;
 import com.blog.back.service.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,12 +39,12 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = jwtService.generateAccessToken(authentication.getName());
         String refreshToken = jwtService.generateRefreshToken(authentication.getName());
 
-        jwtService.setTokenCookies(response, accessToken, refreshToken);
+        jwtService.setTokenCookies(response, userId, accessToken, refreshToken);
     }
 
     @Override
-    public void logout(HttpServletResponse response) {
-        jwtService.removeTokenCookie(response);
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        jwtService.removeTokenCookie(request, response);
     }
 
     @Override
