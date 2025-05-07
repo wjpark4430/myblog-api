@@ -2,6 +2,7 @@ package com.blog.back.service.impl;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.blog.back.domain.Board;
 import com.blog.back.domain.BoardLike;
@@ -28,6 +29,7 @@ public class LikeServiceImpl implements LikeService {
     private final MemberRepository memberRepository;
 
     @Override
+    @Transactional
     public void addLike(Long boardId, Long memberId) {
         String userSetKey = LIKE_USERS_KEY + boardId;
         String countKey = LIKE_COUNT_KEY + boardId;
@@ -52,6 +54,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @Transactional
     public void removeLike(Long boardId, Long memberId) {
         String userSetKey = LIKE_USERS_KEY + boardId;
         String countKey = LIKE_COUNT_KEY + boardId;
@@ -72,6 +75,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public long getLikeCount(Long boardId) {
         Long count = (Long) redisTemplate.opsForValue().get(LIKE_COUNT_KEY + boardId);
         return count == null ? 0L : count;

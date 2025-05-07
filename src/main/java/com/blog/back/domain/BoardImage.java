@@ -21,8 +21,12 @@ public class BoardImage {
     @ManyToOne(fetch = FetchType.LAZY)
     private Image image;
 
-    public BoardImage(Board board, Image image) {
+    private BoardImage(Board board, Image image) {
         this.board = board;
         this.image = image;
+    }
+
+    public static BoardImage ofCreate(Board board, Image image) {
+        return new BoardImage(board, image);
     }
 }

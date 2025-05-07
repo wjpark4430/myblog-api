@@ -2,7 +2,6 @@ package com.blog.back.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -38,22 +37,22 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
                 http
-                                .csrf(csrf -> csrf.disable())
-                                .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/").permitAll()
-                                                .requestMatchers("/auth", "/auth/login", "/member/register").permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/boards/**").permitAll()
-                                                .requestMatchers("/admin/**").hasRole("ADMIN")
-                                                .requestMatchers("/mypage/**").hasRole("USER")
-                                                .anyRequest().authenticated())
-                                .logout(logout -> logout
-                                                .logoutUrl("/logout")
-                                                .addLogoutHandler(customLogoutHandler)
-                                                .logoutSuccessHandler((request, response, authentication) -> {
-                                                        response.sendRedirect("/");
-                                                }))
+                        .csrf(csrf -> csrf.disable())
+                        .authorizeHttpRequests(auth -> auth
+                                        .requestMatchers("/auth", "/auth/login", "/member/register").permitAll()
+                                        .requestMatchers("/boards/**", "/images/**").permitAll()
+                                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                                        // 임시
+                                        .requestMatchers("/mypage/**").permitAll()
+                                        .anyRequest().authenticated())
+                        .logout(logout -> logout
+                                        .logoutUrl("/logout")
+                                        .addLogoutHandler(customLogoutHandler)
+                                        .logoutSuccessHandler((request, response, authentication) -> {
+                                                response.sendRedirect("/");
+                                        }))
 
-                                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
                 return http.build();
         }

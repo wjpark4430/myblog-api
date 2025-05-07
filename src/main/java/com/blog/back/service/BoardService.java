@@ -15,4 +15,6 @@ public interface BoardService {
     Long createBoard(BoardCreateRequestDTO dto);
 
     void updateBoard(Long id, BoardUpdateRequestDTO dto);
+
+    void deleteBoard(Long id);
 }
