@@ -13,7 +13,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -26,11 +28,15 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
+        log.info("Request Method: {}", request.getMethod());
+        log.info("Request URL: {}", request.getRequestURL());
+
         String accessToken = jwtTokenProvider.resolveAccessToken(request);
 
         if (accessToken != null) {
             if (jwtTokenProvider.validateToken(accessToken)) {
                 // access token 유효 → 인증 처리
+                log.info("Access token is valid.");
                 authenticate(accessToken);
             } else {
                 // access token 만료 → refresh token 확인
@@ -39,10 +45,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 if (refreshToken != null && jwtTokenProvider.validateToken(refreshToken)) {
                     String newAccessToken = jwtTokenProvider.reissueAccessToken(refreshToken);
                     jwtService.reissueToken(request, response);
-
+                    log.info(accessToken + " is expired, but refresh token is valid. New access token issued.");
                     authenticate(newAccessToken);
                 } else {
                     // refresh token도 만료 → 로그인 필요
+                    log.info("Access token and refresh token are both invalid.");
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }

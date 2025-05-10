@@ -16,13 +16,20 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imageUrl;
+    private String originalFilename;
+
+    private String savedFilename;
 
     @OneToMany(mappedBy = "image")
     private List<BoardImage> boardImages;
 
-    public Image(String imageUrl) {
-        this.imageUrl = imageUrl;
+    private Image(String originalFilename, String savedFilename) {
+        this.originalFilename = originalFilename;
+        this.savedFilename = savedFilename;
+    }
+
+    public static Image ofCreate(String originalFilename, String savedFilename) {
+        return new Image(originalFilename, savedFilename);
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.blog.back.dto.board.BoardCreateRequestDTO;
 import com.blog.back.dto.board.BoardListResponseDTO;
 import com.blog.back.dto.board.BoardResponseDTO;
+import com.blog.back.dto.board.BoardUpdateRequestDTO;
 import com.blog.back.service.BoardService;
 import com.blog.back.service.LikeService;
 
@@ -54,6 +56,19 @@ public class BoardController {
         Map<String, Long> response = Map.of("id", id);
 
         return ResponseEntity.status(201).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateBoard(@PathVariable("id") Long id,
+            @RequestBody BoardUpdateRequestDTO dto) {
+        boardService.updateBoard(id, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBoard(@PathVariable("id") Long id) {
+        boardService.deleteBoard(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}/like")
